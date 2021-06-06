@@ -1,0 +1,103 @@
+region: region full name
+
+ca-central: California Central Coast
+ca-valley: California Central Valley
+sandiego: San Diego
+oregon-south: Southern Oregon
+brisbane: Brisbane / Gold Coast
+cheyenne: Cheyenne
+wichita: Wichita
+minnesota: Minnesota
+wisconsin: Wisconsin
+michigan-west: West Michigan
+memphis: Memphis
+montreal: Montreal
+delaware: Delaware
+chico: Chico
+boise: Boise
+connecticut: Connecticut
+rhode-island: Rhode Island
+new-hampshire: New Hampshire
+west-oz: Western Australia
+bellingham: Bellingham, WA
+richmond: Richmond
+philadelphia: Philadelphia
+centralpa: Central Pennsylvania
+reno: Reno
+eugene: Eugene & Springfield, OR
+champaign: Champaign
+nebraska: Nebraska
+austin: Austin
+manitoba: Manitoba
+colorado: Colorado
+toronto: Toronto
+portland: Portland, Oregon
+indiana: Indiana
+bc: British Columbia
+nashville: Nashville
+buffalo: Buffalo
+youngstown: Youngstown, OH
+pittsburgh: Pittsburgh
+massachusetts: Massachusetts
+oklahoma: Oklahoma
+vermont: Vermont
+columbia-mo: Columbia, MO
+raleigh-durham: Raleigh-Durham
+san-antonio: San Antonio
+columbia: Columbia, SC
+cincinnati: Cincinnati
+calgary: Calgary
+atlanta: Atlanta
+roanoke: Roanoke
+bend: Bend, Oregon
+tucson: Tucson
+ottawa: Ottawa
+louisville: Louisville
+dc: Washington, DC
+jacksonville: Jacksonville
+spokane: Spokane
+chicago: Chicago
+michigan-mid: Mid-Michigan
+seattle: Seattle
+iowa: Iowa
+hawaii: Hawaii
+birmingham: Birmingham
+charlotte: Charlotte, NC
+tallahassee: Tallahassee
+maine: Maine
+asheville: Asheville, NC
+redding: Redding, CA
+detroit: Detroit
+newjersey: New Jersey
+houston: Houston
+southflorida: South Florida
+tampabay: Tampa Bay
+baltimore: Baltimore
+syracuse: Syracuse
+lasvegas: Las Vegas
+utah: Utah
+hudsonvalley: Hudson Valley, NY
+charleston: Charleston
+rochester: Rochester
+oceancity: Ocean City, MD
+cleveland: Cleveland
+stlouis: St Louis
+columbus: Columbus
+sacramento: Sacramento
+west-virginia: West Virginia
+anchorage: Anchorage
+nsw: New South Wales
+japan: Japan
+tricities: Tri-Cities Tennessee
+savannah: Savannah, GA
+kansascity: Kansas City
+phoenix: Phoenix
+florida-central: Central Florida
+albuquerque: Albuquerque
+dfw: Dallas Fort Worth
+nyc: New York City
+la: Los Angeles
+arkansas: Arkansas
+uk: United Kingdom
+bayarea: Bay Area
+finland: Finland
