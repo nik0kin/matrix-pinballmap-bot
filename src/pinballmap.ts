@@ -13,3 +13,27 @@ export async function getPinballMapRegions() {
     regions: Region[];
   }>;
 }
+
+export interface LocationMachineXref {
+  id: string;
+  updated_at: string;
+  location: { id: number };
+  machine: { id: number };
+}
+
+export interface CachedLocationMachineXref {
+  id: string;
+  updated_at: string;
+  location: number;
+  machine: number;
+}
+
+export async function getPinballMapMachinesByRegions(region: string) {
+  return (
+    await fetch(
+      `${API_BASE_URL}/v1/region/${region}/location_machine_xrefs.json`
+    )
+  ).json() as Promise<{
+    location_machine_xrefs: LocationMachineXref[];
+  }>;
+}

@@ -24,10 +24,15 @@ export interface Settings {
    *   Defaults to `'!pinballmap', '!pm', '!pin'`
    */
   promptWords?: string[];
-
+  /**
+   * Frequency of the bot polling PinballMap's API (in seconds)
+   */
+  pollFrequency: number;
   /**
    * Should the bot auto accept invites to rooms?
    *   Defaults to `false`
    */
   autoJoin?: boolean;
 }
+
+export type SettingsWithDefaults = Required<Settings>;

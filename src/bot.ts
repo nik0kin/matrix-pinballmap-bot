@@ -1,16 +1,53 @@
 /* eslint-disable no-console */
+import { MatrixClient } from 'matrix-bot-sdk';
 import { helpCommand } from './commands/help';
 import { listCommand } from './commands/list';
-import { createMatrixClient, sendBotReply } from './matrix-bot';
-
-import { Settings } from './settings';
+import { watchCommand } from './commands/watch';
+import { unwatchCommand } from './commands/unwatch';
 // import { createError } from './error';
+import { createMatrixClient, sendBotMessage, sendBotReply } from './matrix-bot';
+import { doRegionPoll } from './region-poll';
+import { Settings, SettingsWithDefaults } from './settings';
+import { readWatchedRegions } from './storage';
+
+async function poll(settings: SettingsWithDefaults, botClient: MatrixClient) {
+  try {
+    const updates = await doRegionPoll(botClient);
+    readWatchedRegions(botClient).forEach(([roomId, region]) => {
+      const regionUpdates = updates[region];
+      if (!regionUpdates.length) {
+        // skip message if there's no updates for a region
+        return;
+      }
+      const regionUpdatesStr = regionUpdates.map((ru) => {
+        return `${ru.type} ${ru.location.id} ${ru.machine.id}`;
+      });
+      sendBotMessage(
+        botClient,
+        roomId,
+        `Region Updates for ${region}: ${regionUpdatesStr}`
+      );
+    });
+  } catch (e) {
+    console.error('An error occured while polling for region data', e);
+  }
+  setPollTimeout(settings, botClient);
+}
+
+function setPollTimeout(
+  settings: SettingsWithDefaults,
+  botClient: MatrixClient
+) {
+  setTimeout(() => {
+    poll(settings, botClient);
+  }, settings.pollFrequency * 1000);
+}
 
 /**
  * Starts the Matrix bot
  */
 export async function startBot(userSettings: Settings) {
-  const settings: Required<Settings> = {
+  const settings: SettingsWithDefaults = {
     storageFile: 'bot-storage.json',
     promptWords: ['!pinballmap', '!pm', '!pin'],
     autoJoin: false,
@@ -57,6 +94,12 @@ export async function startBot(userSettings: Settings) {
         case 'list':
           listCommand(reply);
           break;
+        case 'watch':
+          watchCommand(botClient, reply, roomId, rest.join(' ').toLowerCase());
+          break;
+        case 'unwatch':
+          unwatchCommand(botClient, reply, rest.join(' ').toLowerCase());
+          break;
         default:
           helpCommand(settings, reply, command);
       }
@@ -67,4 +110,6 @@ export async function startBot(userSettings: Settings) {
       );
     }
   });
+
+  poll(settings, botClient);
 }
