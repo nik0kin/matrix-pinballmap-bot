@@ -19,7 +19,7 @@ ${settings.promptWords.map((word) => `  - \`${word} [COMMAND]\``).join('\n')}
 Commands:
   - \`watch <region>\`    Turn on notifications for pinball machine location updates in a given region
   - \`unwatch <region>\`  Turn off notifications for a given region
-  - \`list\`              List PinballMap Regions
+  - \`list\`              List PinballMap regions
   - \`help\`              Display this help message
 `;
 
