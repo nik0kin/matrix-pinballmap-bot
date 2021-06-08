@@ -3,6 +3,7 @@ import marked from 'marked';
 import { MatrixClient } from 'matrix-bot-sdk';
 import { helpCommand } from './commands/help';
 import { listCommand } from './commands/list';
+import { regionsCommand } from './commands/regions';
 import { watchCommand } from './commands/watch';
 import { unwatchCommand } from './commands/unwatch';
 // import { createError } from './error';
@@ -99,7 +100,10 @@ export async function startBot(userSettings: Settings) {
           helpCommand(settings, reply);
           break;
         case 'list':
-          listCommand(reply);
+          listCommand(botClient, reply, roomId);
+          break;
+        case 'regions':
+          regionsCommand(reply);
           break;
         case 'watch':
           watchCommand(botClient, reply, roomId, rest.join(' ').toLowerCase());

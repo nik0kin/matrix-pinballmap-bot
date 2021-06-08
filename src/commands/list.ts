@@ -1,8 +1,17 @@
+import { MatrixClient } from 'matrix-bot-sdk';
+import { readWatchedRegions } from '../storage';
+
 export async function listCommand(
-  reply: (message: string, formattedMessage?: string) => void
+  botClient: MatrixClient,
+  reply: (message: string, formattedMessage?: string) => void,
+  roomId: string
 ) {
-  // Don't make the list command API driven to avoid a large wall of text in a room
+  const watchedRegions = readWatchedRegions(botClient).filter(
+    ([_roomId]) => _roomId === roomId
+  );
+
   reply(
-    'See https://github.com/nik0kin/matrix-pinballmap-bot/blob/main/docs/region-list.txt for a list of region names, or see https://pinballmap.com/api/v1/regions.json for the most up to date list'
+    'This room is currently watching: ' +
+      watchedRegions.map(([, region]) => region).join(', ')
   );
 }
