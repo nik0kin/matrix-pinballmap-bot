@@ -25,6 +25,11 @@ export interface Settings {
    */
   promptWords?: string[];
   /**
+   * Dry run indicates that no messages will be sent to Matrix
+   *   Defaults to `false`
+   */
+  dryRun?: boolean;
+  /**
    * Frequency of the bot polling PinballMap's API (in seconds)
    */
   pollFrequency: number;

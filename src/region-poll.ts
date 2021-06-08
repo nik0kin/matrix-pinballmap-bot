@@ -25,25 +25,34 @@ export async function doRegionPoll(
     ...new Set(readWatchedRegions(botClient).map(([, region]) => region)),
   ];
   const regionPromises = uniqueRegions.map((region) =>
-    getPinballMapMachinesByRegions(region).then((data) => {
-      const currentShallowRegion = toCachedRegion(data.location_machine_xrefs);
-      const previousCachedRegion = readRegionCache(botClient, region);
-      saveRegionCache(botClient, region, currentShallowRegion);
-      if (!previousCachedRegion) {
-        // region is not saved in cache, dont notify since this region just started being watched
-        return [region, []] as [string, RegionUpdate[]];
-      }
-      const updates = getRegionUpdates(
-        previousCachedRegion || [],
-        currentShallowRegion,
-        data.location_machine_xrefs
-      );
-      return [region, updates] as const;
-    })
+    getPinballMapMachinesByRegions(region)
+      .then((data) => {
+        const currentShallowRegion = toCachedRegion(
+          data.location_machine_xrefs
+        );
+        const previousCachedRegion = readRegionCache(botClient, region);
+        saveRegionCache(botClient, region, currentShallowRegion);
+        if (!previousCachedRegion) {
+          // region is not saved in cache, dont notify since this region just started being watched
+          return [region, []] as [string, RegionUpdate[]];
+        }
+        const updates = getRegionUpdates(
+          previousCachedRegion || [],
+          currentShallowRegion,
+          data.location_machine_xrefs
+        );
+        return [region, updates] as const;
+      })
+      .catch((e) => {
+        console.error('Error while polling region ' + region, e);
+      })
   );
   const updates = await Promise.all(regionPromises);
-  return updates.reduce((acc, [region, updates]) => {
-    acc[region] = updates;
+  return updates.reduce((acc, v) => {
+    if (v) {
+      const [region, updates] = v;
+      acc[region] = updates;
+    }
     return acc;
   }, {} as Record<string, RegionUpdate[]>);
 }

@@ -18,4 +18,10 @@ try {
   throw new Error(errorMsg);
 }
 
+process.argv.forEach((arg) => {
+  if (arg.toLowerCase().includes('--dryrun')) {
+    settings.dryRun = true;
+  }
+});
+
 startBot(settings);

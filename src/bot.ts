@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import marked from 'marked';
 import { MatrixClient } from 'matrix-bot-sdk';
 import { helpCommand } from './commands/help';
 import { listCommand } from './commands/list';
@@ -6,6 +7,7 @@ import { watchCommand } from './commands/watch';
 import { unwatchCommand } from './commands/unwatch';
 // import { createError } from './error';
 import { createMatrixClient, sendBotMessage, sendBotReply } from './matrix-bot';
+import { getRegionUpdateString } from './message-formatter';
 import { doRegionPoll } from './region-poll';
 import { Settings, SettingsWithDefaults } from './settings';
 import { readWatchedRegions } from './storage';
@@ -17,16 +19,15 @@ async function poll(settings: SettingsWithDefaults, botClient: MatrixClient) {
       const regionUpdates = updates[region];
       if (!regionUpdates.length) {
         // skip message if there's no updates for a region
+        // console.log(region + ': No Region Updates');
         return;
       }
-      const regionUpdatesStr = regionUpdates.map((ru) => {
-        return `${ru.type} ${ru.location.id} ${ru.machine.id}`;
-      });
-      sendBotMessage(
-        botClient,
-        roomId,
-        `Region Updates for ${region}: ${regionUpdatesStr}`
-      );
+      const message = getRegionUpdateString(region, regionUpdates);
+      if (!settings.dryRun) {
+        sendBotMessage(botClient, roomId, message, marked(message));
+      } else {
+        console.log(message);
+      }
     });
   } catch (e) {
     console.error('An error occured while polling for region data', e);
@@ -51,6 +52,7 @@ export async function startBot(userSettings: Settings) {
     storageFile: 'bot-storage.json',
     promptWords: ['!pinballmap', '!pm', '!pin'],
     autoJoin: false,
+    dryRun: false,
     ...userSettings,
   };
   settings.promptWords = settings.promptWords.map((w) => w.toLowerCase());
@@ -65,17 +67,22 @@ export async function startBot(userSettings: Settings) {
     if (event.sender === (await botClient.getUserId())) return;
     if (!event.content || !event.content.body) return;
 
-    const reply = (message: string, formattedMessage?: string) =>
-      sendBotReply(
-        botClient,
-        roomId,
-        {
-          sender: event.sender,
-          message: event.content.body,
-        },
-        message,
-        formattedMessage
-      );
+    const reply = (message: string, formattedMessage?: string) => {
+      if (!settings.dryRun) {
+        sendBotReply(
+          botClient,
+          roomId,
+          {
+            sender: event.sender,
+            message: event.content.body,
+          },
+          message,
+          formattedMessage
+        );
+      } else {
+        console.log('reply: ' + message);
+      }
+    };
 
     const tokens = (event.content.body as string).split(' ');
     const [prompt, commandToken, ...rest] = tokens;

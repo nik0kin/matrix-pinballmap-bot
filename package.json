@@ -49,7 +49,7 @@
     "build": "tsc --module commonjs",
     "build:watch": "tsc --module commonjs -w",
     "coverage": "jest --collectCoverageFrom=src/**/*.ts --coverage",
-    "dev": "nodemon src/bootstrap.ts",
+    "dev": "nodemon src/bootstrap.ts --dryrun",
     "generate-region-list": "ts-node src/generate-region-list.ts",
     "lint": "eslint . --ext .ts",
     "start": "ts-node src/bootstrap.ts",
