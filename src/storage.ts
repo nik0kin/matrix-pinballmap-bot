@@ -1,6 +1,8 @@
 import { MatrixClient, SimpleFsStorageProvider } from 'matrix-bot-sdk';
 import { LocationMachineXref, CachedLocationMachineXref } from './pinballmap';
 
+// watchedRegion: [roomId, region]
+
 export function readWatchedRegions(
   botClient: MatrixClient
 ): Array<[string, string]> {

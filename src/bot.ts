@@ -91,7 +91,7 @@ export async function startBot(userSettings: Settings) {
     if (!settings.promptWords.includes(prompt.toLowerCase())) return;
 
     // check command
-    const [command, arg1, arg2] = (commandToken || '').split(':');
+    const [command /* , arg1, arg2 */] = (commandToken || '').split(':');
 
     try {
       switch (command.toLowerCase()) {
@@ -105,7 +105,12 @@ export async function startBot(userSettings: Settings) {
           watchCommand(botClient, reply, roomId, rest.join(' ').toLowerCase());
           break;
         case 'unwatch':
-          unwatchCommand(botClient, reply, rest.join(' ').toLowerCase());
+          unwatchCommand(
+            botClient,
+            reply,
+            roomId,
+            rest.join(' ').toLowerCase()
+          );
           break;
         default:
           helpCommand(settings, reply, command);

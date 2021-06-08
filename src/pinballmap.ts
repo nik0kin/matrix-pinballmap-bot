@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import fetch from 'node-fetch';
 
 const API_BASE_URL = 'https://pinballmap.com/api';
@@ -13,6 +14,14 @@ export async function getPinballMapRegions() {
     regions: Region[];
   }>;
 }
+
+export const throttledGetPinballMapRegions = _.throttle(
+  getPinballMapRegions,
+  24 * 60 * 60 * 1000, // 24 hours
+  {
+    leading: true,
+  }
+);
 
 export interface Location {
   id: number;
