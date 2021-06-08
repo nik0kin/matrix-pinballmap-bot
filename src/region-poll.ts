@@ -3,7 +3,9 @@ import { MatrixClient } from 'matrix-bot-sdk';
 import {
   CachedLocationMachineXref,
   getPinballMapMachinesByRegions,
+  Location,
   LocationMachineXref,
+  Machine,
 } from './pinballmap';
 import {
   readRegionCache,
@@ -14,8 +16,8 @@ import {
 
 export interface RegionUpdate {
   type: 'add' | 'remove';
-  machine: any;
-  location: any;
+  machine: Machine;
+  location: Location;
 }
 
 export async function doRegionPoll(
@@ -68,16 +70,12 @@ function getRegionUpdates(
 ): RegionUpdate[] {
   const additionUpdates = _.differenceWith(newRegion, oldRegion, isEqual);
   const removalUpdates = _.differenceWith(oldRegion, newRegion, isEqual);
-  function findLocation(locationId: number) {
-    return newRegionFull.find((lm) => {
-      return lm.location.id === locationId;
-    })!;
-  }
-  function findMachine(machineId: number) {
-    return newRegionFull.find((lm) => {
-      return lm.machine.id === machineId;
-    })!;
-  }
+  const findLocation = (locationId: number) => {
+    return newRegionFull.find((lm) => lm.location.id === locationId)!.location;
+  };
+  const findMachine = (machineId: number) => {
+    return newRegionFull.find((lm) => lm.machine.id === machineId)!.machine;
+  };
   return [
     ...additionUpdates.map(
       (locationMachine): RegionUpdate => ({

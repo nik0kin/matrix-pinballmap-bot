@@ -13,8 +13,8 @@ export function getRegionUpdateString(
   regionUpdates: RegionUpdate[]
 ) {
   const regionUpdatesStr = regionUpdates.map((ru) => {
-    return ` - ${ru.location.id} ${ru.type ? 'added' : 'removed'} ${
-      ru.machine.id
+    return ` - ${ru.location.name} ${ru.type ? 'added' : 'removed'} ${
+      ru.machine.name
     }`;
   });
   return `Region Updates for ${region}:

@@ -5,8 +5,8 @@ describe('getRegionUpdateString()', () => {
     const result = getRegionUpdateString('atlantis', [
       {
         type: 'add',
-        machine: { id: 'WaterWorld' },
-        location: { id: 'The Arcade' },
+        machine: { id: 101, name: 'WaterWorld' },
+        location: { id: 201, name: 'The Arcade' },
       },
     ]);
     expect(result).toEqual(`Region Updates for atlantis:

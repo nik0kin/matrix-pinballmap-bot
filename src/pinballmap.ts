@@ -14,11 +14,21 @@ export async function getPinballMapRegions() {
   }>;
 }
 
+export interface Location {
+  id: number;
+  name: string;
+}
+
+export interface Machine {
+  id: number;
+  name: string;
+}
+
 export interface LocationMachineXref {
   id: string;
   updated_at: string;
-  location: { id: number };
-  machine: { id: number };
+  location: Location;
+  machine: Machine;
 }
 
 export interface CachedLocationMachineXref {
