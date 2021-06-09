@@ -1,7 +1,7 @@
 import { Region } from './pinballmap';
 import { RegionUpdate } from './region-poll';
 
-export function getRegionListString(regions: Region[]) {
+export function getRegionListDocString(regions: Region[]) {
   const str = `region: region full name
 
 ${regions.map(({ name, full_name }) => `${name}: ${full_name}`).join('\n')}`;

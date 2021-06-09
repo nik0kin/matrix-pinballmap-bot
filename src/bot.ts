@@ -3,7 +3,7 @@ import marked from 'marked';
 import { MatrixClient } from 'matrix-bot-sdk';
 import { helpCommand } from './commands/help';
 import { listCommand } from './commands/list';
-import { regionsCommand } from './commands/regions';
+import { regionsCommand, regions2Command } from './commands/regions';
 import { watchCommand } from './commands/watch';
 import { unwatchCommand } from './commands/unwatch';
 // import { createError } from './error';
@@ -104,6 +104,9 @@ export async function startBot(userSettings: Settings) {
           break;
         case 'regions':
           regionsCommand(reply);
+          break;
+        case 'regions2':
+          regions2Command(reply);
           break;
         case 'watch':
           watchCommand(botClient, reply, roomId, rest.join(' ').toLowerCase());
