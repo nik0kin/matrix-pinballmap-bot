@@ -4,12 +4,15 @@ import {
   CachedLocationMachineXref,
   getPinballMapMachinesByRegions,
   Location,
-  LocationMachineXref,
   Machine,
 } from './pinballmap';
 import {
+  readLocationCache,
+  readMachineCache,
   readRegionCache,
   readWatchedRegions,
+  saveLocationCache,
+  saveMachineCache,
   saveRegionCache,
   toCachedRegion,
 } from './storage';
@@ -19,6 +22,8 @@ export interface RegionUpdate {
   machine: Machine;
   location: Location;
 }
+
+const missingFromCache = { id: -1, name: 'name-missing-from-cache' };
 
 export async function doRegionPoll(
   botClient: MatrixClient
@@ -34,14 +39,19 @@ export async function doRegionPoll(
         );
         const previousCachedRegion = readRegionCache(botClient, region);
         saveRegionCache(botClient, region, currentShallowRegion);
+        data.location_machine_xrefs.forEach((lm) => {
+          // TODO EFF skip writes if it's already been cached recently
+          saveLocationCache(botClient, lm.location);
+          saveMachineCache(botClient, lm.machine);
+        });
         if (!previousCachedRegion) {
           // region is not saved in cache, dont notify since this region just started being watched
           return [region, []] as [string, RegionUpdate[]];
         }
         const updates = getRegionUpdates(
-          previousCachedRegion || [],
-          currentShallowRegion,
-          data.location_machine_xrefs
+          botClient,
+          previousCachedRegion,
+          currentShallowRegion
         );
         return [region, updates] as const;
       })
@@ -64,31 +74,34 @@ function isEqual(a: CachedLocationMachineXref, b: CachedLocationMachineXref) {
 }
 
 function getRegionUpdates(
+  botClient: MatrixClient,
   oldRegion: CachedLocationMachineXref[],
-  newRegion: CachedLocationMachineXref[],
-  newRegionFull: LocationMachineXref[]
+  newRegion: CachedLocationMachineXref[]
 ): RegionUpdate[] {
   const additionUpdates = _.differenceWith(newRegion, oldRegion, isEqual);
   const removalUpdates = _.differenceWith(oldRegion, newRegion, isEqual);
-  const findLocation = (locationId: number) => {
-    return newRegionFull.find((lm) => lm.location.id === locationId)!.location;
-  };
-  const findMachine = (machineId: number) => {
-    return newRegionFull.find((lm) => lm.machine.id === machineId)!.machine;
-  };
+
   return [
     ...additionUpdates.map(
       (locationMachine): RegionUpdate => ({
         type: 'add',
-        location: findLocation(locationMachine.location),
-        machine: findMachine(locationMachine.machine),
+        location:
+          readLocationCache(botClient, locationMachine.location) ||
+          missingFromCache,
+        machine:
+          readMachineCache(botClient, locationMachine.machine) ||
+          missingFromCache,
       })
     ),
     ...removalUpdates.map(
       (locationMachine): RegionUpdate => ({
         type: 'remove',
-        location: findLocation(locationMachine.location),
-        machine: findMachine(locationMachine.machine),
+        location:
+          readLocationCache(botClient, locationMachine.location) ||
+          missingFromCache,
+        machine:
+          readMachineCache(botClient, locationMachine.machine) ||
+          missingFromCache,
       })
     ),
   ];

@@ -1,5 +1,10 @@
 import { MatrixClient, SimpleFsStorageProvider } from 'matrix-bot-sdk';
-import { LocationMachineXref, CachedLocationMachineXref } from './pinballmap';
+import {
+  LocationMachineXref,
+  CachedLocationMachineXref,
+  Machine,
+  Location,
+} from './pinballmap';
 
 // watchedRegion: [roomId, region]
 
@@ -60,4 +65,54 @@ export function toCachedRegion(
     };
     return clone;
   });
+}
+
+// A Machine/Location needs to be in the cache so that when a Machine is removed, it's name can be referenced
+// TODO remove RegionUpdate's could use a PinballMap API to lookup info
+
+// TODO EFF Machine/Location cache entries can be cleared if `watchedRegions` does not contain any locationMachines with an id pointing to the cached location or machine
+//  or after a recent polling, any location or machine that wasnt just cached, could be thrown out
+
+const machineCachePrefix = 'm_';
+
+export function readMachineCache(
+  botClient: MatrixClient,
+  machineId: number
+): Machine | undefined {
+  const savedValue = (
+    botClient.storageProvider as SimpleFsStorageProvider
+  ).readValue(machineCachePrefix + machineId);
+  return savedValue ? JSON.parse(savedValue) : undefined;
+}
+
+export function saveMachineCache(
+  botClient: MatrixClient,
+  { id, name }: Machine
+) {
+  (botClient.storageProvider as SimpleFsStorageProvider).storeValue(
+    machineCachePrefix + id,
+    JSON.stringify({ id, name })
+  );
+}
+
+const locationCachePrefix = 'l_';
+
+export function readLocationCache(
+  botClient: MatrixClient,
+  locationId: number
+): Machine | undefined {
+  const savedValue = (
+    botClient.storageProvider as SimpleFsStorageProvider
+  ).readValue(locationCachePrefix + locationId);
+  return savedValue ? JSON.parse(savedValue) : undefined;
+}
+
+export function saveLocationCache(
+  botClient: MatrixClient,
+  { id, name }: Location
+) {
+  (botClient.storageProvider as SimpleFsStorageProvider).storeValue(
+    locationCachePrefix + id,
+    JSON.stringify({ id, name })
+  );
 }
