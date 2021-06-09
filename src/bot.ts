@@ -18,7 +18,7 @@ async function poll(settings: SettingsWithDefaults, botClient: MatrixClient) {
     const updates = await doRegionPoll(botClient);
     readWatchedRegions(botClient).forEach(([roomId, region]) => {
       const regionUpdates = updates[region];
-      if (!regionUpdates.length) {
+      if (!regionUpdates || !regionUpdates.length) {
         // skip message if there's no updates for a region
         // console.log(region + ': No Region Updates');
         return;

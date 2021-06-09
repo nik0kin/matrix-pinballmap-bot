@@ -1,5 +1,12 @@
 import _ from 'lodash';
-import fetch from 'node-fetch';
+import nodeFetch from 'node-fetch';
+
+async function fetch(url: string) {
+  const response = await nodeFetch(url);
+
+  console.log(`${response.status} Fetched from ${url}`);
+  return response;
+}
 
 const API_BASE_URL = 'https://pinballmap.com/api';
 
